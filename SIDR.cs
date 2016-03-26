@@ -17,6 +17,8 @@ namespace SOFIS
         List<String> Lista_Archivos = new List<string>();
         string[] arregloRuta, arregloNombre;
         int segundo = 0, minuto = 0, errores=0;
+        
+        
         public SIDR()
         {
             InitializeComponent();
@@ -41,11 +43,17 @@ namespace SOFIS
                 arregloRuta = Lista_Archivos[i].Split('\\');
                 if ( Validar_Nombre(arregloRuta[3]) == true )
                 {
+                    string rutaDestino_Correcto = @"C:\SOFIS\intake\PendingToTransmit\" + arregloRuta[3];
+                    string rutaOrigen = Lista_Archivos[i];
                     listBox1.Items.Add(arregloRuta[3]);
+                    System.IO.File.Move(rutaOrigen,rutaDestino_Correcto);
                     correcto++;
                 }
                 else
                 {
+                    string rutaDestino_Invalido = @"C:\SOFIS\intake\FilesWithErrors\" + arregloRuta[3];
+                    string rutaOrigen = Lista_Archivos[i];
+                    System.IO.File.Move(rutaOrigen,rutaDestino_Invalido);
                     errores++;
                 }
             }
@@ -53,11 +61,11 @@ namespace SOFIS
             lblAgregados.Text = "Agregados correctamente: " + correcto.ToString();
             if (errores != 0)
             {
-                lblErrores.Text = "Se encontraron " + errores.ToString() + " archivos con errores.";
+              lblErrores.Text = "Se encontraron " + errores.ToString() + " archivos con errores.";
             }
             else
             {
-                lblErrores.Text = "Ningun archivo con error.";
+              lblErrores.Text = "Ningun archivo con error.";
             }
             Lista_Archivos.Clear();
         }
@@ -206,6 +214,7 @@ namespace SOFIS
             }
             return valido;
         }//fin validar_nombre
+
 
         private void timer1_Tick(object sender, EventArgs e)
         {
