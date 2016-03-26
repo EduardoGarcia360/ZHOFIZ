@@ -1,0 +1,9 @@
+C:\E\Progra\VisualStudioProjects\SOFIS\SOFIS\bin\Debug\SOFIS.exe.config
+C:\E\Progra\VisualStudioProjects\SOFIS\SOFIS\bin\Debug\SOFIS.exe
+C:\E\Progra\VisualStudioProjects\SOFIS\SOFIS\bin\Debug\SOFIS.pdb
+C:\E\Progra\VisualStudioProjects\SOFIS\SOFIS\obj\Debug\SOFIS.csprojResolveAssemblyReference.cache
+C:\E\Progra\VisualStudioProjects\SOFIS\SOFIS\obj\Debug\SOFIS.Properties.Resources.resources
+C:\E\Progra\VisualStudioProjects\SOFIS\SOFIS\obj\Debug\SOFIS.SIDR.resources
+C:\E\Progra\VisualStudioProjects\SOFIS\SOFIS\obj\Debug\SOFIS.csproj.GenerateResource.Cache
+C:\E\Progra\VisualStudioProjects\SOFIS\SOFIS\obj\Debug\SOFIS.exe
+C:\E\Progra\VisualStudioProjects\SOFIS\SOFIS\obj\Debug\SOFIS.pdb
