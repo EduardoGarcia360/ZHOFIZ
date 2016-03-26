@@ -95,7 +95,6 @@
             this.btnVer.TabIndex = 7;
             this.btnVer.Text = "Ver Archivos";
             this.btnVer.UseVisualStyleBackColor = true;
-            this.btnVer.Click += new System.EventHandler(this.btnVer_Click);
             // 
             // listBox1
             // 
