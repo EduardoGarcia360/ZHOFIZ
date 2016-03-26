@@ -68,7 +68,7 @@ namespace SOFIS
             arregloNombre = nombreArchivo.Split('.');
             try
             {
-                if (arregloNombre[9].Equals("XML") || arregloNombre[9].Equals("jpg"))
+                if (arregloNombre[9].Equals("XML") || arregloNombre[9].Equals("xml"))
                 {
                     //si tiene extencion XML
                     int caso = 0;
@@ -212,14 +212,14 @@ namespace SOFIS
             if (segundo == 59)
             {
                 minuto++;
-                lblMinutos.Text = "0" + minuto.ToString() + " min";
+                lblMinutos.Text = "0" + minuto.ToString() + " min:";
                 lblSegundos.Text = "00 s";
                 segundo = 0;
                 if(minuto == 5){
                     Escanear_Archivos();
                     minuto = 0;
                     segundo = 0;
-                    lblMinutos.Text = "00 min";
+                    lblMinutos.Text = "00 min:";
                     lblSegundos.Text = "00 s";
                     pBEscaneando.Value = 0;
                 }
