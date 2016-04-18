@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Threading;
+using System.IO;
 
 namespace SOFIS
 {
@@ -17,13 +18,14 @@ namespace SOFIS
         List<String> Lista_Archivos = new List<string>();
         string[] arregloRuta, arregloNombre;
         int segundo = 0, minuto = 0, errores=0;
-        
+        Conexion BD = new Conexion();
         
         public SIDR()
         {
             InitializeComponent();
             timer1.Enabled = true;
             timer1.Start();
+            Validar_Carpetas();
             Escanear_Archivos();
         }
 
@@ -32,45 +34,78 @@ namespace SOFIS
             
         }
 
+        private void Validar_Carpetas()
+        {
+            if (!Directory.Exists(@"C:\SOFIS"))
+            {
+                System.IO.Directory.CreateDirectory(@"C:\SOFIS");
+            }
+            if (!Directory.Exists(@"C:\SOFIS\intake"))
+            {
+                System.IO.Directory.CreateDirectory(@"C:\SOFIS\intake");
+            }
+            if (!Directory.Exists(@"C:\SOFIS\intake\PendingToTransmit"))
+            {
+                System.IO.Directory.CreateDirectory(@"C:\SOFIS\intake\PendingToTransmit");
+            }
+            if (!Directory.Exists(@"C:\SOFIS\intake\FilesWithErrors"))
+            {
+                System.IO.Directory.CreateDirectory(@"C:\SOFIS\intake\FilesWithErrors");
+            }
+        }
+
         public void Escanear_Archivos()
         {
             string hora_Archivo = DateTime.Now.ToString("G");
             listBox1.Items.Add("Fecha y Hora de Escaneo: " + hora_Archivo);
+            listBox2.Items.Add("Fecha y Hora de Escaneo: " + hora_Archivo);
             Lista_Archivos = System.IO.Directory.GetFiles(@"C:\SOFIS\intake").ToList();
-            int i = 0, correcto = 0;
-            for (; i < Lista_Archivos.Count(); i++)
-            {
-                arregloRuta = Lista_Archivos[i].Split('\\');
-                if ( Validar_Nombre(arregloRuta[3]) == true )
+            if (Lista_Archivos.Count() != 0)
+            {//si la carpeta tiene uno o mas archivos
+                int i = 0, correcto = 0;
+                for (; i < Lista_Archivos.Count(); i++)
                 {
-                    string rutaDestino_Correcto = @"C:\SOFIS\intake\PendingToTransmit\" + arregloRuta[3];
-                    string rutaOrigen = Lista_Archivos[i];
-                    listBox1.Items.Add(arregloRuta[3]);
-                    System.IO.File.Move(rutaOrigen,rutaDestino_Correcto);
-                    correcto++;
+                    arregloRuta = Lista_Archivos[i].Split('\\');
+                    if (Validar_Nombre(arregloRuta[3], hora_Archivo) == true)
+                    {
+                        string rutaDestino_Correcto = @"C:\SOFIS\intake\PendingToTransmit\" + arregloRuta[3];
+                        string rutaOrigen = Lista_Archivos[i];
+                        listBox1.Items.Add(arregloRuta[3]);
+                        System.IO.File.Move(rutaOrigen, rutaDestino_Correcto);
+                        correcto++;
+                    }
+                    else
+                    {
+                        string rutaDestino_Invalido = @"C:\SOFIS\intake\FilesWithErrors\" + arregloRuta[3];
+                        string rutaOrigen = Lista_Archivos[i];
+                        System.IO.File.Move(rutaOrigen, rutaDestino_Invalido);
+                        listBox2.Items.Add(arregloRuta[3]);
+                        errores++;
+                    }
+                }
+
+                lblAgregados.Text = "Agregados correctamente: " + correcto.ToString();
+                if (errores != 0)
+                {
+                    lblErrores.Text = "Se encontraron " + errores.ToString() + " archivos con errores.";
                 }
                 else
                 {
-                    string rutaDestino_Invalido = @"C:\SOFIS\intake\FilesWithErrors\" + arregloRuta[3];
-                    string rutaOrigen = Lista_Archivos[i];
-                    System.IO.File.Move(rutaOrigen,rutaDestino_Invalido);
-                    errores++;
+                    lblErrores.Text = "Ningun archivo con error.";
                 }
-            }
-
-            lblAgregados.Text = "Agregados correctamente: " + correcto.ToString();
-            if (errores != 0)
-            {
-              lblErrores.Text = "Se encontraron " + errores.ToString() + " archivos con errores.";
-            }
+            }//si no hay nada
             else
             {
-              lblErrores.Text = "Ningun archivo con error.";
+                listBox1.Items.Add("No hay archivos para procesar...");
+                listBox2.Items.Add("No hay archivos para procesar...");
+                lblAgregados.Text = "Agregados correctamente: 0";
+                lblErrores.Text = "Ningun archivo con error.";
             }
+            
             Lista_Archivos.Clear();
         }
 
-        private bool Validar_Nombre(string nombreArchivo)
+        private bool Validar_Nombre(string nombreArchivo, string fecha_r)
         {
             bool valido = true, detener = false, febrero = false;
             arregloNombre = nombreArchivo.Split('.');
@@ -188,9 +223,18 @@ namespace SOFIS
                                 {
                                     valido = true;
                                     detener = true;
+                                    String[] tmp = fecha_r.Split(' ');
+                                    String[] tmp2 = tmp[0].Split('/');
+                                    String fecha_recibido = tmp2[2] + "-" + tmp2[1] + "-" + tmp2[0];
+                                    String fecha = arregloNombre[2] + "-" + arregloNombre[3] + "-" + arregloNombre[4];
+                                    String horag = arregloNombre[5] + ":" + arregloNombre[6] + ":" + arregloNombre[7];
+                                    
+                                    BD.Insertar_en_Archivo(arregloNombre[0], arregloNombre[1], fecha, horag, fecha_recibido);
+                                    
+                                    
                                 }
                                 else
-                                {
+                                {//si tiene 1000 en adelante
                                     caso = 9;
                                 }
                                 break;
@@ -225,12 +269,12 @@ namespace SOFIS
                 lblSegundos.Text = "00 s";
                 segundo = 0;
                 if(minuto == 5){
+                    Validar_Carpetas();
                     Escanear_Archivos();
                     minuto = 0;
                     segundo = 0;
                     lblMinutos.Text = "00 min:";
                     lblSegundos.Text = "00 s";
-                    pBEscaneando.Value = 0;
                 }
             }
             else
@@ -245,7 +289,11 @@ namespace SOFIS
                     lblSegundos.Text = segundo.ToString() + " s";
                 }
             }
-            pBEscaneando.Increment(1);
-        } //Fin timer1_tick
+        } //Fin timer
+
+        private void btnVer_Click(object sender, EventArgs e)
+        {
+            System.Diagnostics.Process.Start(@"C:\SOFIS\intake\PendingToTransmit\");
+        } 
     }
 }
