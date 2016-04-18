@@ -80,6 +80,19 @@ namespace SOFIS
                         string rutaOrigen = Lista_Archivos[i];
                         System.IO.File.Move(rutaOrigen, rutaDestino_Invalido);
                         listBox2.Items.Add(arregloRuta[3]);
+
+                        string[] tmpNombre = arregloRuta[3].Split('.'); //NOS QUEDA [NOMBRE][EXTENCION]
+
+                        string[] tmpHora = hora_Archivo.Split(' ');
+                        string hora = tmpHora[1] + " " + tmpHora[2];
+
+                        
+
+                        if (BD.insertar_en_descartado(tmpNombre[0], tmpNombre[1], tmpHora[0], hora)==false)
+                        {
+                            MessageBox.Show("Error al incertar en descartado");
+                        }
+                        
                         errores++;
                     }
                 }
@@ -223,13 +236,20 @@ namespace SOFIS
                                 {
                                     valido = true;
                                     detener = true;
-                                    String[] tmp = fecha_r.Split(' ');
-                                    String[] tmp2 = tmp[0].Split('/');
-                                    String fecha_recibido = tmp2[2] + "-" + tmp2[1] + "-" + tmp2[0];
-                                    String fecha = arregloNombre[2] + "-" + arregloNombre[3] + "-" + arregloNombre[4];
-                                    String horag = arregloNombre[5] + ":" + arregloNombre[6] + ":" + arregloNombre[7];
+
+                                    string[] tmpFecha_Hora = fecha_r.Split(' ');
+
+                                    string fecha_recibido_ = tmpFecha_Hora[0].ToString();
+                                    string hora_recibido_ = tmpFecha_Hora[1] + " " + tmpFecha_Hora[2];
+
+                                    string fecha_generado_ = arregloNombre[4] + "/" + arregloNombre[3] + "/" + arregloNombre[2];
+                                    string hora_generado_ = arregloNombre[5] + ":" + arregloNombre[6] + ":" + arregloNombre[7];
+
+                                    if (BD.Insertar_en_Archivo(arregloNombre[0], arregloNombre[1], fecha_generado_, hora_generado_, fecha_recibido_, hora_recibido_, "recibido") == false)
+                                    {
+                                        MessageBox.Show("Error al agregar a archivo");
+                                    }
                                     
-                                    BD.Insertar_en_Archivo(arregloNombre[0], arregloNombre[1], fecha, horag, fecha_recibido);
                                     
                                     
                                 }
@@ -262,6 +282,12 @@ namespace SOFIS
 
         private void timer1_Tick(object sender, EventArgs e)
         {
+            //if (segundo == 15 || segundo == 30 || segundo == 45 || segundo == 0)
+            //{
+                //Validar_Carpetas();
+                //Escanear_Archivos();
+            //}
+
             if (segundo == 59)
             {
                 minuto++;
