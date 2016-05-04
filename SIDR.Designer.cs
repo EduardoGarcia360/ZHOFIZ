@@ -42,6 +42,8 @@
             this.label3 = new System.Windows.Forms.Label();
             this.listBox2 = new System.Windows.Forms.ListBox();
             this.label4 = new System.Windows.Forms.Label();
+            this.lblvalidacion1 = new System.Windows.Forms.Label();
+            this.lblvalidacion2 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // label1
@@ -163,12 +165,32 @@
             this.label4.TabIndex = 14;
             this.label4.Text = "Archivos Incorrectos";
             // 
+            // lblvalidacion1
+            // 
+            this.lblvalidacion1.AutoSize = true;
+            this.lblvalidacion1.Location = new System.Drawing.Point(478, 422);
+            this.lblvalidacion1.Name = "lblvalidacion1";
+            this.lblvalidacion1.Size = new System.Drawing.Size(71, 13);
+            this.lblvalidacion1.TabIndex = 15;
+            this.lblvalidacion1.Text = "lblvalidacion1";
+            // 
+            // lblvalidacion2
+            // 
+            this.lblvalidacion2.AutoSize = true;
+            this.lblvalidacion2.Location = new System.Drawing.Point(481, 457);
+            this.lblvalidacion2.Name = "lblvalidacion2";
+            this.lblvalidacion2.Size = new System.Drawing.Size(71, 13);
+            this.lblvalidacion2.TabIndex = 16;
+            this.lblvalidacion2.Text = "lblvalidacion2";
+            // 
             // SIDR
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("$this.BackgroundImage")));
             this.ClientSize = new System.Drawing.Size(998, 497);
+            this.Controls.Add(this.lblvalidacion2);
+            this.Controls.Add(this.lblvalidacion1);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.listBox2);
             this.Controls.Add(this.label3);
@@ -203,6 +225,8 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.ListBox listBox2;
         private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label lblvalidacion1;
+        private System.Windows.Forms.Label lblvalidacion2;
     }
 }
 

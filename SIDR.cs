@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Threading;
 using System.IO;
+using System.Net;
 
 namespace SOFIS
 {
@@ -19,6 +20,7 @@ namespace SOFIS
         string[] arregloRuta, arregloNombre;
         int segundo = 0, minuto = 0, errores=0;
         Conexion BD = new Conexion();
+        ValidarXML vxml = new ValidarXML();
         
         public SIDR()
         {
@@ -56,23 +58,45 @@ namespace SOFIS
 
         public void Escanear_Archivos()
         {
+            //obtenemos la hora actual del sistema
             string hora_Archivo = DateTime.Now.ToString("G");
+            //la agregamos a los listbox
             listBox1.Items.Add("Fecha y Hora de Escaneo: " + hora_Archivo);
             listBox2.Items.Add("Fecha y Hora de Escaneo: " + hora_Archivo);
+            //creamos una lista con todos los archivos que esten en la carpeta
             Lista_Archivos = System.IO.Directory.GetFiles(@"C:\SOFIS\intake").ToList();
+
             if (Lista_Archivos.Count() != 0)
             {//si la carpeta tiene uno o mas archivos
-                int i = 0, correcto = 0;
-                for (; i < Lista_Archivos.Count(); i++)
+                int correcto = 0;
+                string ruta = "";
+                for (int i=0; i < Lista_Archivos.Count(); i++)
                 {
+                    ruta = Lista_Archivos[i];
+                    /**
+                     * separamos la ruta del archivo: C:\SOFIS\intake\archivo.xml mediante '\'
+                     * [C:] [SOFIS] [intake] [archivo.xml]
+                     * */
                     arregloRuta = Lista_Archivos[i].Split('\\');
+
                     if (Validar_Nombre(arregloRuta[3], hora_Archivo) == true)
                     {
-                        string rutaDestino_Correcto = @"C:\SOFIS\intake\PendingToTransmit\" + arregloRuta[3];
+                        if (vxml.validar_contenido(arregloRuta[3]))
+                        {
+                            listBox2.Items.Add("valido papu");
+                        }
+                        else
+                        {
+                            listBox2.Items.Add("baneado lince");
+                        }
+                        /**
+                         *string rutaDestino_Correcto = @"C:\SOFIS\intake\PendingToTransmit\" + arregloRuta[3];
                         string rutaOrigen = Lista_Archivos[i];
                         listBox1.Items.Add(arregloRuta[3]);
                         System.IO.File.Move(rutaOrigen, rutaDestino_Correcto);
-                        correcto++;
+                        correcto++; 
+                         * */
+
                     }
                     else
                     {
@@ -95,7 +119,7 @@ namespace SOFIS
                         
                         errores++;
                     }
-                }
+                }//fin for
 
                 lblAgregados.Text = "Agregados correctamente: " + correcto.ToString();
                 if (errores != 0)
@@ -319,7 +343,14 @@ namespace SOFIS
 
         private void btnVer_Click(object sender, EventArgs e)
         {
-            System.Diagnostics.Process.Start(@"C:\SOFIS\intake\PendingToTransmit\");
+            //System.Diagnostics.Process.Start(@"C:\SOFIS\intake\PendingToTransmit\");
+            //C:\SOFIS\intake\BANCA.CARTA.2016.02.23.08.00.01.311.xml
+            StreamReader f = new StreamReader(@"C:\SOFIS\intake\BANCA.CARTA.2016.02.23.08.00.01.311.xml");
+            string contenido = f.ReadToEnd();
+            Respaldo copia = new Respaldo();
+            copia.crear_copia("BANCA.CARTA.2016.02.23.08.00.01.311", contenido);
+            lblvalidacion1.Text = "copia realizada";
+
         } 
     }
 }
