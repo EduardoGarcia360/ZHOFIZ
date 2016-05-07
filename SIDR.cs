@@ -21,6 +21,7 @@ namespace SOFIS
         int segundo = 0, minuto = 0, errores=0;
         Conexion BD = new Conexion();
         ValidarXML vxml = new ValidarXML();
+        Respaldo copia = new Respaldo();
         
         public SIDR()
         {
@@ -59,6 +60,7 @@ namespace SOFIS
         public void Escanear_Archivos()
         {
             //obtenemos la hora actual del sistema
+            //03/05/2016 11:00:44 p.m.
             string hora_Archivo = DateTime.Now.ToString("G");
             //la agregamos a los listbox
             listBox1.Items.Add("Fecha y Hora de Escaneo: " + hora_Archivo);
@@ -73,29 +75,23 @@ namespace SOFIS
                 for (int i=0; i < Lista_Archivos.Count(); i++)
                 {
                     ruta = Lista_Archivos[i];
+                    //creamos la copia
+                    copia.crear_copia(ruta, hora_Archivo);
                     /**
                      * separamos la ruta del archivo: C:\SOFIS\intake\archivo.xml mediante '\'
                      * [C:] [SOFIS] [intake] [archivo.xml]
                      * */
                     arregloRuta = Lista_Archivos[i].Split('\\');
-
+                    //arregloRuta[3] contiene el nombre del archivo
+                    
+                    //validamos que la mascara del nombre sea correcta
                     if (Validar_Nombre(arregloRuta[3], hora_Archivo) == true)
                     {
-                        if (vxml.validar_contenido(arregloRuta[3]))
-                        {
-                            listBox2.Items.Add("valido papu");
-                        }
-                        else
-                        {
-                            listBox2.Items.Add("baneado lince");
-                        }
-                        /**
-                         *string rutaDestino_Correcto = @"C:\SOFIS\intake\PendingToTransmit\" + arregloRuta[3];
+                        string rutaDestino_Correcto = @"C:\SOFIS\intake\PendingToTransmit\" + arregloRuta[3];
                         string rutaOrigen = Lista_Archivos[i];
                         listBox1.Items.Add(arregloRuta[3]);
                         System.IO.File.Move(rutaOrigen, rutaDestino_Correcto);
-                        correcto++; 
-                         * */
+                        correcto++;
 
                     }
                     else
@@ -269,12 +265,20 @@ namespace SOFIS
                                     string fecha_generado_ = arregloNombre[4] + "/" + arregloNombre[3] + "/" + arregloNombre[2];
                                     string hora_generado_ = arregloNombre[5] + ":" + arregloNombre[6] + ":" + arregloNombre[7];
 
-                                    if (BD.Insertar_en_Archivo(arregloNombre[0], arregloNombre[1], fecha_generado_, hora_generado_, fecha_recibido_, hora_recibido_, "recibido") == false)
+                                    if (vxml.validar_contenido(nombreArchivo))
                                     {
-                                        MessageBox.Show("Error al agregar a archivo");
+                                        if (!BD.Insertar_en_Archivo(arregloNombre[0], arregloNombre[1], fecha_generado_, hora_generado_, fecha_recibido_, hora_recibido_, "validado"))
+                                        {
+                                            MessageBox.Show("Error al agregar a archivo");
+                                        }
                                     }
-                                    
-                                    
+                                    else
+                                    {
+                                        if (!BD.Insertar_en_Archivo(arregloNombre[0], arregloNombre[1], fecha_generado_, hora_generado_, fecha_recibido_, hora_recibido_, "rechazado"))
+                                        {
+                                            MessageBox.Show("Error al agregar a archivo");
+                                        }
+                                    }
                                     
                                 }
                                 else
@@ -296,13 +300,12 @@ namespace SOFIS
                     valido = false;
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 valido = false;
             }
             return valido;
         }//fin validar_nombre
-
 
         private void timer1_Tick(object sender, EventArgs e)
         {
@@ -344,13 +347,12 @@ namespace SOFIS
         private void btnVer_Click(object sender, EventArgs e)
         {
             //System.Diagnostics.Process.Start(@"C:\SOFIS\intake\PendingToTransmit\");
-            //C:\SOFIS\intake\BANCA.CARTA.2016.02.23.08.00.01.311.xml
-            StreamReader f = new StreamReader(@"C:\SOFIS\intake\BANCA.CARTA.2016.02.23.08.00.01.311.xml");
-            string contenido = f.ReadToEnd();
-            Respaldo copia = new Respaldo();
-            copia.crear_copia("BANCA.CARTA.2016.02.23.08.00.01.311", contenido);
-            lblvalidacion1.Text = "copia realizada";
-
+            ValidarXML vxml = new ValidarXML();
+            if (!vxml.composicion_archivo("COMUNICACION.PUBLICIDAD.2016.09.23.08.00.01.751.xml"))
+            {
+                lblvalidacion1.Text = "error papu";
+            }
+            
         } 
     }
 }

@@ -208,17 +208,48 @@ namespace SOFIS
             return valido;
         }
 
-        private bool es_numero(string numero)
+        public bool rendering_trabajos(string archivo)
         {
+            bool valido = false;
+            XmlDocument documento = new XmlDocument();
             try
             {
-                Convert.ToInt32(numero);
-                return true;
+                documento.Load(@"C:\SOFIS\intake\" + archivo);
+                
             }
             catch (Exception)
             {
-                return false;
+                return valido;
             }
+
+            return valido;
+        }
+
+        public bool composicion_archivo(string archivo)
+        {
+            bool valido = false;
+            XmlDocument doc = new XmlDocument();
+            try
+            {
+                doc.Load(@"C:\SOFIS\intake\" + archivo);
+
+                XmlNodeList pagina = doc.SelectNodes("//pagina");
+                for (int i = 0; i < pagina.Count; i++)
+                {
+                    XmlNode nodo = pagina[i];
+                    XmlAttribute nuevo = doc.CreateAttribute("numeroSerie");
+                    nuevo.InnerText = (i + 1).ToString();
+                    nodo.Attributes.Append(nuevo);
+                }
+
+                doc.Save(@"C:\SOFIS\intake\" + archivo);
+                valido = true;
+            }
+            catch (Exception)
+            {
+                return valido;
+            }
+            return valido;
         }
 
     }

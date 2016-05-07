@@ -1,22 +1,21 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <trabajoImpresion>
-	<datos>
-		<fechaCreacion>14-03-2016 10:20:25</fechaCreacion>
-		<identificador>CARTA001</identificador>
-		<nombre>CARTA001-NOTIFICACIONES</nombre>
-		<departamento>BANCA</departamento>
-		<tipo>CARTA</tipo>
-		<totalDeHojas>100</totalDeHojas>
-		<cantidadDocumentos>50</cantidadDocumentos>
-		<paginasImpresas>125</paginasImpresas>
-		<paginasEnBlanco>75</paginasEnBlanco>
-		<tamanioImpresion>Carta</tamanioImpresion>
-		<formatoImpresion>DUPLEX</formatoImpresion>
-		<tamanioSobre>50</tamanioSobre>
-	</datos>
-<contenido>
-<pagina numero="1" orientacion="Vertical">
-<![CDATA[
+  <datos>
+    <fechaCreacion>14-03-2016 10:20:25</fechaCreacion>
+    <identificador>CARTA001</identificador>
+    <nombre>CARTA001-NOTIFICACIONES</nombre>
+    <departamento>BANCA</departamento>
+    <tipo>CARTA</tipo>
+    <totalDeHojas>100</totalDeHojas>
+    <cantidadDocumentos>50</cantidadDocumentos>
+    <paginasImpresas>125</paginasImpresas>
+    <paginasEnBlanco>75</paginasEnBlanco>
+    <tamanioImpresion>Carta</tamanioImpresion>
+    <formatoImpresion>DUPLEX</formatoImpresion>
+    <tamanioSobre>50</tamanioSobre>
+  </datos>
+  <contenido>
+    <pagina numero="1" orientacion="Vertical"><![CDATA[
 	<html>
 		<body>
 			<DESTINATARIO>
@@ -31,7 +30,6 @@
 				</P>
 		</body>
 	</html>
-]]>
-</pagina>
-</contenido>
+]]></pagina>
+  </contenido>
 </trabajoImpresion>

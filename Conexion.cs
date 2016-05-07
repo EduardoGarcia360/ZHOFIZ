@@ -11,8 +11,6 @@ namespace SOFIS
     class Conexion
     {
         public static string cadena_conexion;
-        SqlDataReader dr;
-
         public Conexion()
         {
             cadena_conexion = "Data Source=Edu-PC;Initial Catalog=SOFISBD;Integrated Security=True";
@@ -26,11 +24,39 @@ namespace SOFIS
                 conn.Open();
                 return conn;
             }
-            catch (Exception exc)
+            catch (Exception)
             {
                 return null;
             }
         } //fin private
+
+        public bool Insertar_en_Copia(String nombre, string fecharece, string horarece)
+        {
+            SqlConnection conn;
+            try
+            {
+                using (conn = get_conexion())
+                {
+                    using (SqlCommand command = new SqlCommand())
+                    {
+                        command.Connection = conn;
+                        command.CommandType = System.Data.CommandType.Text;
+                        command.CommandText = "INSERT INTO copia "
+                            + "(nombre, fecha_recepcion, hora_recepcion)"
+                            + " VALUES (@nombre, @fecha_recepcion, @hora_recepcion)";
+
+                        command.Parameters.Add("@nombre", System.Data.SqlDbType.VarChar).Value = nombre;
+                        command.Parameters.Add("@fecha_recepcion", System.Data.SqlDbType.VarChar).Value = fecharece;
+                        command.Parameters.Add("@hora_recepcion", System.Data.SqlDbType.VarChar).Value = horarece;
+                        return (command.ExecuteNonQuery() == 1);
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
 
         public bool Insertar_en_Archivo(string depa, string tipo, string fechagen, string horagen, string fecharece, string horarece, string estado)
         {
@@ -58,7 +84,7 @@ namespace SOFIS
                     }
                 }
             }
-            catch (Exception exc)
+            catch (Exception)
             {
                 return false;
             }
@@ -86,10 +112,38 @@ namespace SOFIS
                     }
                 }
             }
-            catch (Exception exc)
+            catch (Exception)
             {
                 return false;
             }
         }//fin descartado
+
+        public bool actualizar_dato()
+        {
+            SqlConnection conn;
+            try
+            {
+                using (conn = get_conexion())
+                {
+                    using (SqlCommand command = new SqlCommand())
+                    {
+                        command.Connection = conn;
+                        command.CommandType = System.Data.CommandType.Text;
+                        command.CommandText = "INSERT INTO descartado (nombre, extencion, fecha_recibido, hora_recibido)"
+                                                + " VALUES (@nombre, @extencion, @fecharec, @horarec)";
+
+                        command.Parameters.Add("@nombre", System.Data.SqlDbType.VarChar).Value = nombre;
+                        command.Parameters.Add("@extencion", System.Data.SqlDbType.VarChar).Value = extencion;
+                        command.Parameters.Add("@fecharec", System.Data.SqlDbType.VarChar).Value = fecharec;
+                        command.Parameters.Add("@horarec", System.Data.SqlDbType.VarChar).Value = horarec;
+                        return (command.ExecuteNonQuery() == 1);
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
     }
 }
